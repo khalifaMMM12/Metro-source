@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/metrosource/',
+  base: '/ms/',
   plugins: [react(), jsconfigPaths(), tailwindcss()],
   build: {
     assetsDir: 'assets',
