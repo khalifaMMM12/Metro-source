@@ -1,6 +1,6 @@
 import { Button, Flex, Image, List, useBreakpointValue, Text } from "@chakra-ui/react";
 import Logo from "@/assets/logo.svg";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
@@ -147,12 +147,6 @@ const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const scrollPosition = useScrollPosition(); // Get scroll position
-  const location = useLocation(); // Get current route
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setActive(false);
-  }, [location.pathname]);
 
   const toggleActive = () => {
     setActive(!active);
@@ -268,7 +262,7 @@ const Navbar = () => {
       </Flex>
 
       {/* Mobile Menu Sliding Dropdown */}
-      {isMobile && (
+      {isMobile && active && (
         <motion.div
           initial={false}
           animate={active ? "open" : "closed"}
