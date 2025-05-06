@@ -18,7 +18,7 @@ const MotionImage = motion(Image);
 
 const Services = () => {
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -300])
   const location = useLocation();
 
   const services = {

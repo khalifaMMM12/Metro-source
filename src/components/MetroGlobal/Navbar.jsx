@@ -1,6 +1,6 @@
 import { Button, Flex, Image, List, useBreakpointValue, Text } from "@chakra-ui/react";
 import Logo from "@/assets/logo.svg";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
@@ -147,6 +147,12 @@ const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const scrollPosition = useScrollPosition(); // Get scroll position
+  const location = useLocation(); // Get current route
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setActive(false);
+  }, [location.pathname]);
 
   const toggleActive = () => {
     setActive(!active);
@@ -273,17 +279,19 @@ const Navbar = () => {
           transition={{ duration: 0.4, ease: "easeInOut" }}
           style={{
             position: "fixed",
-            top: "70px", // Adjust based on new navbar height if changed
+            top: "70px", 
             right: 0,
-            background: "#181818", // Dark background
+            background: "#181818", 
             width: "100%",
-            height: "calc(100vh - 70px)", // Full height minus navbar
-            padding: "2rem 1rem", // Adjusted padding
+            height: "auto", // Changed from calc(100vh - 70px)
+            maxHeight: "calc(100vh - 70px)", // Added maxHeight
+            overflowY: "auto", // Added for scrollability if content exceeds maxHeight
+            padding: "2rem 1rem", 
             display: "flex",
             flexDirection: "column",
             gap: "1.5rem",
-            zIndex: 999, // Below navbar
-            borderTop: `1px solid ${accentColor}` // Add a top border accent
+            zIndex: 999, 
+            borderTop: `1px solid ${accentColor}` 
           }}
         >
           {menu.map((menuItem) => (
@@ -300,7 +308,7 @@ const Navbar = () => {
                 padding: "10px 0",
                 textAlign: "center",
                 opacity: isActive ? 1 : 0.9,
-                borderBottom: `1px solid ${isActive ? accentColor : 'rgba(255, 255, 255, 0.1)'}` // Subtle separator
+                borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}` // Changed: No more orange underline for active item
               })}
             >
               {({ isActive }) => (
@@ -311,18 +319,18 @@ const Navbar = () => {
             </NavLink>
           ))}
           <Button
-            mt={6} // Add some margin top
-            variant="solid" // Solid style for mobile
+            variant="solid" 
             bg={accentColor}
-            color={"#121212"} // Dark text on accent bg
+            color={"#121212"} 
             rounded="full"
             px={8}
-            py={6} // Larger touch target
-            _hover={{ bg: "#d66a1f" }} // Darken accent on hover
+            py={6} 
+            _hover={{ bg: "#d66a1f" }} 
             fontSize="1.2rem"
+            sx={{ marginTop: 'auto', paddingTop: '1.5rem' }} // Push to bottom, ensure some space above
             onClick={() => {
-              setIsModalOpen(true); // Open modal
-              setActive(false); // Close mobile menu
+              setIsModalOpen(true); 
+              setActive(false); 
             }}
           >
             Get in Touch
