@@ -1,9 +1,130 @@
 import { Button, Flex, Image, List, useBreakpointValue, Text } from "@chakra-ui/react";
 import Logo from "@/assets/logo.svg";
 import { Link, NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
+import { FaWhatsapp, FaPhone } from "react-icons/fa";
+
+// GetInTouchModal Component Definition
+const GetInTouchModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  const accentColor = "#EF7826";
+  const modalBgColor = "#181818"; // Slightly lighter than navbar's deep dark for layering
+  const textColor = "#EAEAEA";
+
+  // Actual phone number and WhatsApp link
+  const phoneNumber = "+2349120245727"; 
+  const whatsappLink = "https://wa.me/2349120245727";
+  const callLink = `tel:${phoneNumber.replace(/\s/g, '')}`; // Ensure no spaces in tel link
+
+  return (
+    <div // Backdrop
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1050, // Higher than navbar
+      }}
+      onClick={onClose} // Close on backdrop click
+    >
+      <div // Modal Content
+        style={{
+          background: modalBgColor,
+          padding: '30px',
+          borderRadius: '12px',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+          minWidth: '320px',
+          maxWidth: '90%',
+          position: 'relative',
+          zIndex: 1051,
+          textAlign: 'center',
+          border: `1px solid ${accentColor}`
+        }}
+        onClick={(e) => e.stopPropagation()} // Prevent backdrop click when clicking content
+      >
+        <button
+          style={{
+            position: 'absolute',
+            top: '15px',
+            right: '15px',
+            background: 'transparent',
+            border: 'none',
+            color: textColor,
+            fontSize: '24px',
+            cursor: 'pointer',
+          }}
+          onClick={onClose}
+        >
+          &times;
+        </button>
+        <Text fontSize="2xl" fontWeight="bold" color={textColor} mb={6}>
+          Get in Touch
+        </Text>
+
+        <a href={whatsappLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <Button
+            style={{
+              background: '#25D366', // WhatsApp green
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              width: '100%',
+              marginBottom: '15px',
+              transition: 'background-color 0.2s ease',
+            }}
+            onMouseOver={(e) => e.currentTarget.style.background = '#1DAA50'}
+            onMouseOut={(e) => e.currentTarget.style.background = '#25D366'}
+          >
+            <FaWhatsapp size={20} />
+            Chat on WhatsApp
+          </Button>
+        </a>
+
+        <a href={callLink} style={{ textDecoration: 'none' }}>
+          <Button
+            style={{
+              background: accentColor,
+              color: modalBgColor, // Dark text on accent
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              width: '100%',
+              transition: 'background-color 0.2s ease',
+            }}
+            onMouseOver={(e) => e.currentTarget.style.background = '#D66A1F'}
+            onMouseOut={(e) => e.currentTarget.style.background = accentColor}
+          >
+            <FaPhone size={20} />
+            Call Us Directly
+          </Button>
+        </a>
+      </div>
+    </div>
+  );
+};
 
 // Custom hook to track scroll position
 const useScrollPosition = () => {
@@ -23,7 +144,7 @@ const useScrollPosition = () => {
 
 const Navbar = () => {
   const [active, setActive] = useState(false);
-  const [showContactModal, setShowContactModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const scrollPosition = useScrollPosition(); // Get scroll position
 
@@ -120,7 +241,7 @@ const Navbar = () => {
           _hover={{ bg: accentColor, color: "#121212" }} // Fill on hover, change text to dark
           fontSize="1.1rem" // Adjusted font size
           fontWeight="500"
-          onClick={() => setShowContactModal(true)}
+          onClick={() => setIsModalOpen(true)}
         >
           Get in Touch
         </Button>
@@ -189,7 +310,6 @@ const Navbar = () => {
               )}
             </NavLink>
           ))}
-          {/* Optionally add the 'Get in Touch' button here too */}
           <Button
             mt={6} // Add some margin top
             variant="solid" // Solid style for mobile
@@ -200,99 +320,17 @@ const Navbar = () => {
             py={6} // Larger touch target
             _hover={{ bg: "#d66a1f" }} // Darken accent on hover
             fontSize="1.2rem"
-            onClick={() => setActive(false)} // Close menu on click
-            as={Link} // Make it a Link if it navigates
-            to="/contact" // Example link, adjust as needed
+            onClick={() => {
+              setIsModalOpen(true); // Open modal
+              setActive(false); // Close mobile menu
+            }}
           >
             Get in Touch
           </Button>
         </motion.div>
       )}
-
-      {/* Custom Get in Touch Modal */}
-      {showContactModal && (
-        <div style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.55)",
-          zIndex: 2000,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}>
-          <div style={{
-            background: "#181818",
-            borderRadius: "1.5rem",
-            padding: "2.5rem 2rem",
-            minWidth: 320,
-            boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            position: "relative"
-          }}>
-            <button
-              onClick={() => setShowContactModal(false)}
-              style={{
-                position: "absolute",
-                top: 18, right: 18,
-                background: "none",
-                border: "none",
-                color: "#fff",
-                fontSize: 24,
-                cursor: "pointer"
-              }}
-              aria-label="Close"
-            >×</button>
-            <h2 style={{ color: "#EF7826", marginBottom: 24, fontWeight: 700, fontSize: "1.5rem" }}>Get in Touch</h2>
-            <a
-              href="tel:+2349120245727"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                background: "#232323",
-                color: "#fff",
-                borderRadius: "1rem",
-                padding: "1rem 2rem",
-                marginBottom: 18,
-                textDecoration: "none",
-                fontWeight: 500,
-                fontSize: "1.1rem",
-                transition: "background 0.2s"
-              }}
-              onMouseOver={e => e.currentTarget.style.background = "#EF7826"}
-              onMouseOut={e => e.currentTarget.style.background = "#232323"}
-            >
-              <span style={{ fontSize: 22, display: "flex" }}>📞</span>
-              Call +234 912 024 5727
-            </a>
-            <a
-              href="https://wa.me/2349120245727"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                background: "#232323",
-                color: "#fff",
-                borderRadius: "1rem",
-                padding: "1rem 2rem",
-                textDecoration: "none",
-                fontWeight: 500,
-                fontSize: "1.1rem",
-                transition: "background 0.2s"
-              }}
-              onMouseOver={e => e.currentTarget.style.background = "#25D366"}
-              onMouseOut={e => e.currentTarget.style.background = "#232323"}
-            >
-              <span style={{ fontSize: 22, display: "flex" }}>🟢</span>
-              WhatsApp Chat
-            </a>
-          </div>
-        </div>
-      )}
+      {/* Modal will be rendered here */}
+      <GetInTouchModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </Flex>
   );
 };
